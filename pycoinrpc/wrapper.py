@@ -64,15 +64,15 @@ def wallet_to_json(w):
    {'extended_key': w.wallet_key(as_private=w.is_private),
     'is_test': w.is_test,
     'is_private': w.is_private,
-    'secret': w.secret_exponent if w.is_private else None,
+    'secret': w.is_private and w.secret_exponent or None,
     'public_pair': w.public_pair,
     'depth': w.depth,
     'self': b2h(w.fingerprint()),
     'parent':b2h(w.parent_fingerprint),
     'child_number': w.child_number,
     'chain_code': b2h(w.chain_code),
-    'wif': w.wif() if w.is_private else None,
-    'uncompressed_wif': w.wif(compressed=False),
+    'wif': w.is_private and w.wif() or None,
+    'uncompressed_wif': w.is_private and w.wif(compressed=False) or None,
     'address': w.bitcoin_address(),
     'uncompressed_address': w.bitcoin_address(compressed=False)})
 
