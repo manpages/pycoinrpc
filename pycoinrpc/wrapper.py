@@ -1,7 +1,22 @@
 import json
 import binascii
-import pprint
+
 from pycoin.wallet import Wallet
+
+class Wrapper(object):
+  def rpc(mpi):
+    try:
+      mpi = json.loads(mpi)
+    except:
+      return badarg()
+    if not dispatch().get(mpi.get('method', None), None):
+      return nomethod(mpi.get('method', 'NOTSUPPLIED'), mpi.get('id', 'NOTSUPPLIED'))
+    else:
+      result_maybe = dispatch()[mpi.get('method', None)](mpi.get('params', None))
+      if(result_maybe.get('result', None)):
+        return reply(result_maybe['result'], mpi['id'])
+      else:
+        return error(result_maybe['error'], mpi['id'])
 
 def badarg():
   return '{"result":null,"error":"badarg","id":null}'
@@ -13,28 +28,12 @@ def dispatch():
 def vector1():
   return "000102030405060708090a0b0c0d0e0f"
 
-def rpc(mpi):
-  try:
-    mpi = json.loads(mpi)
-  except:
-    return badarg()
-  if not dispatch()[mpi['method']]:
-    return nomethod(mpi['method'], mpi['id'])
-  else:
-    result_maybe = dispatch()[mpi['method']](mpi['params'])
-    if(result_maybe.get('result', None)):
-      return reply(result_maybe['result'], mpi['id'])
-    else:
-      return error(result_maybe['error'], mpi['id'])
-
 def get_info(params):
 
   chain_path = params.get('chain_path', None)
   source_key = params.get('source_key', None)
   entropy = params.get('entropy', None)
   testnet = params.get('testnet', 0)
-
-  print(json.dumps(params))
 
   return get_info_do(chain_path, source_key, entropy, testnet)
 
