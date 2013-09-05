@@ -44,7 +44,15 @@ def get_info_do(chain_path, source_key, entropy, testnet):
     else:
       w = Wallet.from_master_secret(bytes(entropy, encoding='ascii'), is_test=testnet)
       return {'result': wallet_to_json(w)}
-  return {'result': "chain_path: " + chain_path + " | " + "source_key: " + source_key}
+  elif(source_key == None):
+    return {'error': '"no_source_key"'}
+  else:
+    w = Wallet.from_wallet_key(source_key)
+    if(chain_path == None):
+      return {'result': wallet_to_json(w)}
+    else:
+      return {'result': wallet_to_json(w.subkey_for_path(chain_path))}
+  return {'error': '"unexpected (chain_path: "' + chain_path + '"; source_key: "' + source_key + '")"'}
 
 def reply(result, msgid):
   return '{"result":' + result + ',"error":null,"id":"' + msgid + '"}'
@@ -53,7 +61,8 @@ def error(error, msgid):
 
 def wallet_to_json(w):
   return json.dumps(
-   {'is_test': w.is_test,
+   {'extended_key': w.wallet_key(as_private=w.is_private),
+    'is_test': w.is_test,
     'is_private': w.is_private,
     'secret': w.secret_exponent if w.is_private else None,
     'public_pair': w.public_pair,
