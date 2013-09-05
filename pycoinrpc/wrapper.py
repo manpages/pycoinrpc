@@ -43,7 +43,7 @@ def get_info_do(chain_path, source_key, entropy, testnet):
       return {'error': '"no_entropy"'}
     else:
       w = Wallet.from_master_secret(bytes(entropy, encoding='ascii'), is_test=testnet)
-      return {'result': json.dumps(wallet_to_json(w))}
+      return {'result': wallet_to_json(w)}
   return {'result': "chain_path: " + chain_path + " | " + "source_key: " + source_key}
 
 def reply(result, msgid):
