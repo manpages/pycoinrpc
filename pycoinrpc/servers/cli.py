@@ -11,7 +11,8 @@ def main():
     line = sys.stdin.readline()
     if not line: break
 
-    response = Wrapper.rpc(line) + "\n" + \
+    wrapper = Wrapper()
+    response = wrapper.rpc(line) + "\n" + \
                "COMMIT\n"
 
     sys.stdout.write(response)

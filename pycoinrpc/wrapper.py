@@ -4,7 +4,7 @@ import binascii
 from pycoin.wallet import Wallet
 
 class Wrapper(object):
-  def rpc(mpi):
+  def rpc(_self, mpi):
     try:
       mpi = json.loads(mpi)
     except:
