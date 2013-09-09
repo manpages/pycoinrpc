@@ -42,8 +42,12 @@ def get_info_do(chain_path, source_key, entropy, testnet):
     if(entropy == None):
       return {'error': '"no_entropy"'}
     else:
-      w = Wallet.from_master_secret(bytes(entropy, encoding='ascii'), is_test=testnet)
-      return {'result': wallet_to_json(w)}
+      try: # Python 3
+        w = Wallet.from_master_secret(bytes(entropy, encoding='ascii'), is_test=testnet)
+        return {'result': wallet_to_json(w)}
+      except: # Python 2.7
+        w = Wallet.from_master_secret(bytes(entropy).encode('ascii'), is_test=testnet)
+        return {'result': wallet_to_json(w)}
   elif(source_key == None):
     return {'error': '"no_source_key"'}
   else:
